@@ -1,6 +1,6 @@
 /**
- * Builds the app, starts production server on a spare port, captures /demo
- * full-page to docs/readme-ui.png for README.md.
+ * Builds the app, starts production server on a spare port, captures
+ * full-page screenshots of each main screen into docs/ for README.md.
  */
 import { execSync, spawn } from "node:child_process";
 import { mkdir } from "node:fs/promises";
@@ -16,6 +16,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const PORT = String(process.env.CAPTURE_PORT ?? "3010");
 const base = `http://127.0.0.1:${PORT}`;
+
+const SHOTS = [
+  { route: "/", file: "screenshot-input.png" },
+  { route: "/demo", file: "screenshot-reasoning-brief.png" },
+  { route: "/history/demo", file: "screenshot-decision-history.png" },
+];
 
 function wait(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -60,24 +66,29 @@ const server = spawn("npm", ["run", "start", "--", "-p", PORT], {
 });
 
 try {
-  await waitForHttp(`${base}/demo`, 120_000);
+  await waitForHttp(`${base}/`, 120_000);
+
+  const outDir = join(root, "docs");
+  await mkdir(outDir, { recursive: true });
 
   const browser = await chromium.launch();
   const page = await browser.newPage({
     viewport: { width: 1280, height: 720 },
     deviceScaleFactor: 2,
   });
-  await page.goto(`${base}/demo`, {
-    waitUntil: "networkidle",
-    timeout: 60_000,
-  });
 
-  const outDir = join(root, "docs");
-  await mkdir(outDir, { recursive: true });
-  const outFile = join(outDir, "readme-ui.png");
-  await page.screenshot({ path: outFile, fullPage: true });
+  for (const { route, file } of SHOTS) {
+    const url = `${base}${route}`;
+    await page.goto(url, {
+      waitUntil: "networkidle",
+      timeout: 60_000,
+    });
+    const outFile = join(outDir, file);
+    await page.screenshot({ path: outFile, fullPage: true });
+    console.log("Wrote", outFile);
+  }
+
   await browser.close();
-  console.log("Wrote", outFile);
 } finally {
   await stopServer(server);
   await wait(800);

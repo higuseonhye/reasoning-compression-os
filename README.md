@@ -2,11 +2,25 @@
 
 A minimal Next.js app that turns long-form text into a structured reasoning brief: core problem, tensions, ambiguities, decisions (with reasoning), tradeoffs, and next moves.
 
-## Product demo
+## Product screenshots
 
-The **Reasoning brief** view below uses the same UI as a live compression. In the running app, open **`/demo`** for this static sample (no API key).
+### 1. Input workspace
 
-![Reasoning brief — structured sections, calm typography, executive-memo layout](docs/readme-ui.png)
+Paste or upload raw material, then run **Compress reasoning** (requires `OPENAI_API_KEY` in `.env.local`).
+
+![Input workspace — calm textarea and primary action](docs/screenshot-input.png)
+
+### 2. Reasoning brief
+
+Structured brief: core problem, tensions, ambiguities, decisions with reasoning, tradeoffs, and next moves. Static sample at **`/demo`** (no API key).
+
+![Reasoning brief — executive-style sections and whitespace](docs/screenshot-reasoning-brief.png)
+
+### 3. Decision history
+
+Log of saved briefs with outcomes and unresolved items. Static sample at **`/history/demo`** (no API key); live data uses browser `localStorage` on **`/history`**.
+
+![Decision history — saved decisions, unresolved context, outcome notes](docs/screenshot-decision-history.png)
 
 ## Setup
 
@@ -21,7 +35,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Screenshots
 
-To regenerate `docs/readme-ui.png` (full-page capture of `/demo`):
+Regenerate all images in `docs/`:
 
 ```bash
 npm run capture:readme
