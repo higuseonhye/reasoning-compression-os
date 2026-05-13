@@ -18,6 +18,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/" className={linkClass}>
               Input
             </Link>
+            <Link href="/demo" className={linkClass}>
+              Demo
+            </Link>
             <Link href="/history" className={linkClass}>
               Decision history
             </Link>
